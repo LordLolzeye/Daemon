@@ -1,0 +1,8 @@
+ErrorDocument 404 /404.php
+ErrorDocument 403 /404.php
+
+# deny most common except .php
+<FilesMatch "\.(inc|tpl|h|ihtml|sql|ini|conf|class|bin|spd|theme|module|exe)$">
+deny from all
+</FilesMatch> 
+deny from all
