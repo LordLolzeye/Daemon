@@ -30,7 +30,7 @@ function doZip($source, $destination, $include_dir = false)
         return false;
     }
 
-    if (file_exists($destination)) {
+    if (file_exists($destination)) { //Sterg fisierul .zip daca acesta exista deja
         unlink ($destination);
     }
 
