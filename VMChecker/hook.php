@@ -7,9 +7,7 @@ datele despre event-ul pentru care facem listen
 */
 
 require "Utils/Config.php";
-require "Utils/MySQL.php";
 require "Utils/Archiver.php";
-require "Utils/DeleteDirectory.php";
 require "Utils/DownloadDir.php";
 
 if (isset($_GET['password'])) {
@@ -19,33 +17,35 @@ if (isset($_GET['password'])) {
         if (isset($_POST['ceva'])) {
             if (!empty($_POST['ceva'])) {
                 $acelCeva = $_POST['ceva'];
-                if (strpos($acelCeva, $keyWord) !== false) {
-                    $localDir = $acelCeva; //Vom primi prin post repo-ul pe care trebuie sa il luam
+                $ok       = 0;
+                foreach ($_POST['commits'] as $commit) {
+                    if (strpos($commit['message'], $keyWord) !== false) {
+                        $ok = 1;
+                        break;
+                    }
+                }
+                if ($ok == 1) {
+                    $repository  = $_POST['repository']['git_http_url'];
+                    $submitUser  = $_POST['user_name'];
+                    $submitEmail = $_POST['user_email'];
                     
-                    $ftp = new ftp($ftphost, $ftpuser, $ftppass);
-                    $ftp->recursive($localDir, $remoteDir, 'get');
-                    //Inserez in Baza de Date datele primite.
-                    //Ma intereseaza: 
-                    //$path(== $localDir), $user, $email, $date = strtime
-                    $db       = new MySQL($dbName, $user, $pass, $host);
-                    $date     = strtotime("now");
-                    $inserObj = array(
-                        'date' => $date,
-                        'user' => $submitUser,
-                        'email' => $submitEmail,
-                        'status' => 'inQueue'
-                    );
-                    $db->Insert($insertObj, 'queue');
+                    $localDirForDB = "/home/vmchecker/storer-vmchecker/repo/?????/" . $submitUser;
+                    $localDir      = $localDirForDB . "/lastsubmit";
+                    exec("rm -rf " . $localDir);
+                    exec("mkdir " . $localDir);
+                    exec("cd " . $localDir);
+                    exec("git clone " . $repository);
                     
-                    /*
-                    Trimiterea temei catre check
-                    */
-                    //Intai arhivez folderul cu tema
                     doZip($localDir, "/var/www/VMChecker/Queue/" . $submitUser . ".zip");
-                    //Sterg continutul folderului
-                    rrmdir($localDir);
+                    //Try to put file into QUEUE --- UPLOAD
+                    // ????
                     
+                    exec("rm /var/www/VMChecker/Queue/" . $submitUser . ".zip");
                     
+                    $db   = new SQLite3('queue.db');
+                    $date = strtotime("now");
+                    $db->exec("INSERT INTO `queue`('id', 'date', 'user', 'email', 'status', 'localDir')
+                    VALUES ('', '" . $date . "', '" . $submitUser . "', '" . $submitEmail . "', 'inQueue', '" . $localDirForDB . "')");
                 }
             }
         }
