@@ -3,7 +3,7 @@
 # Necesar:
     -> Vom avea un server Apache cu PHP pe serverul care contine VMChecker-ul.
     -> Pe serverul GitLab vom avea nevoie de un trigger pentru a accesa script-ul de pe serverul VMChecker-ului.
-    -> Vom avea nevoie de o baza de date MySQL pe serverul VMChecker.
+    -> Vom avea nevoie de support SQLite3 pe serverul VMChecker
 
 
 # Procesul se va desfasura in modul urmator:
@@ -20,12 +20,12 @@
 #DB Structure
 
     CREATE TABLE IF NOT EXISTS `queue` (
-    `id` int(255) NOT NULL AUTO_INCREMENT,
-    `date` varchar(100) NOT NULL,
-    `user` varchar(80) NOT NULL,
-    `email` varchar(80) NOT NULL,
-    `localDir` varchar(255) NOT NULL,
-    `status` varchar(30) NOT NULL DEFAULT 'inQueue',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `user` (`user`)
+           `id` int(255) NOT NULL AUTO_INCREMENT,
+           `date` varchar(100) NOT NULL,
+           `user` varchar(80) NOT NULL,
+           `email` varchar(80) NOT NULL,
+           `localDir` varchar(255) NOT NULL,
+           `status` varchar(30) NOT NULL DEFAULT 'inQueue',
+           PRIMARY KEY (`id`),
+           UNIQUE KEY `user` (`user`)
     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
