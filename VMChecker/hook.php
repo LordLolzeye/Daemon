@@ -29,6 +29,8 @@ if (isset($_GET['password'])) {
                     $submitUser  = $_POST['user_name'];
                     $submitEmail = $_POST['user_email'];
                     
+					// this should be stored in a temporary directory,
+					// something like /tmp/.$submitUser
                     $localDirForDB = "/home/vmchecker/storer-vmchecker/repo/?????/" . $submitUser;
                     $localDir      = $localDirForDB . "/lastsubmit";
                     exec("rm -rf " . $localDir);
@@ -36,9 +38,12 @@ if (isset($_GET['password'])) {
                     exec("cd " . $localDir);
                     exec("git clone " . $repository);
                     
+					// a better idea is to use `git archive`
                     doZip($localDir, "/var/www/VMChecker/Queue/" . $submitUser . ".zip");
                     //Try to put file into QUEUE --- UPLOAD
                     // ????
+					// to put it in the queue, you can use vmchecker-submit
+					// `vmchecker-submit COURSE ASSIGNMENT USER ARCHIVE`
                     
                     exec("rm /var/www/VMChecker/Queue/" . $submitUser . ".zip");
                     
