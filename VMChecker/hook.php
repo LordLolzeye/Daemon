@@ -32,7 +32,7 @@ if (isset($_GET['password'])) {
                     $localDirForDB = "/home/vmchecker/storer-vmchecker/repo/?????/" . $submitUser;
                     $localDir      = $localDirForDB . "/lastsubmit";
                     exec("rm -rf " . $localDir);
-                    exec("mkdir " . $localDir);
+                    exec("mkdir -p " . $localDir);
                     exec("cd " . $localDir);
                     exec("git clone " . $repository);
                     
