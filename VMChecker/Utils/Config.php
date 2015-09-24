@@ -5,6 +5,9 @@ $keyWord = "VMCHECKER"; //keyWorld-ul pentru care facem listen pe commit / push
 $emailSenderAddress = "vmchecker@vmchecker.com";
 $emailSubject = "Rezultate VMChecker";
 
+$course = "AAAA";
+$assignment = "tema1";
+
 //Securitate
 $token    = "CEVA"; //masura suplim de securitate
 $gitlabIP = "1.1.1.1"; //+1 la securitate
