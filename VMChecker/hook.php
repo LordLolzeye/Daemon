@@ -28,25 +28,22 @@ if (isset($_GET['password'])) {
                     $repository  = $_POST['repository']['git_http_url'];
                     $submitUser  = $_POST['user_name'];
                     $submitEmail = $_POST['user_email'];
-                    
-					// this should be stored in a temporary directory,
-					// something like /tmp/.$submitUser
-                    $localDirForDB = "/home/vmchecker/storer-vmchecker/repo/?????/" . $submitUser;
+
+                    $localDirForDB = "/tmp/" . $submitUser;
                     $localDir      = $localDirForDB . "/lastsubmit";
+
                     exec("rm -rf " . $localDir);
                     exec("mkdir -p " . $localDir);
                     exec("cd " . $localDir);
                     exec("git clone " . $repository);
-                    
-					// a better idea is to use `git archive`
-                    doZip($localDir, "/var/www/VMChecker/Queue/" . $submitUser . ".zip");
-                    //Try to put file into QUEUE --- UPLOAD
-                    // ????
-					// to put it in the queue, you can use vmchecker-submit
-					// `vmchecker-submit COURSE ASSIGNMENT USER ARCHIVE`
-                    
-                    exec("rm /var/www/VMChecker/Queue/" . $submitUser . ".zip");
-                    
+
+                    doZip($localDir, "/var/www/VMChecker/Queue/" . $submitUser . ".zip"); //or exec("cd " . $localDir);exec("git archive --format=zip -o /var/www/VMChecker/Queue/" . $submitUser . ".zip");
+
+                    //Adding file to vmchecker queue, course and assignment defined in Config.php
+                    exec("vmchecker-submit " . $course . " " . $assignment . " " . $submitUser . " /var/www/VMChecker/Queue/" . $submitUser. ".zip");
+
+                    exec("rm -rf /var/www/VMChecker/Queue/" . $submitUser . ".zip");
+
                     $db   = new SQLite3('queue.db');
                     $date = strtotime("now");
                     $db->exec("INSERT INTO `queue`('id', 'date', 'user', 'email', 'status', 'localDir')
