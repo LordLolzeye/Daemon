@@ -1,3 +1,4 @@
+<?php
 /*
 include_dir = true;
 
@@ -87,3 +88,4 @@ function doZip($source, $destination, $include_dir = false)
     }
     return $zip->close();
 }
+?>
